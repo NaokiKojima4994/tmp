@@ -34,12 +34,16 @@ echo "[" > "$jsonFilePath"
     echo "  {" >> "$jsonFilePath"
 
     fieldIndex=1
+    firstField=true
     for field in $headers; do
       value=$(eval echo \$$field | sed 's/"/\\"/g')
-      if [ $fieldIndex -gt 1 ]; then
-        echo "," >> "$jsonFilePath"
+      if [ -n "$value" ]; then
+        if [ "$firstField" = false ]; then
+          echo "," >> "$jsonFilePath"
+        fi
+        echo "    \"$field\": \"$value\"" >> "$jsonFilePath"
+        firstField=false
       fi
-      echo "    \"$field\": \"$value\"" >> "$jsonFilePath"
       fieldIndex=$((fieldIndex + 1))
     done
 
