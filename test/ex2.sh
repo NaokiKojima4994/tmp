@@ -17,8 +17,13 @@ for dir in $DIRS; do
 
   for base in $BASE_BRANCHES; do
     echo "--- $dir / $base ---"
-    # ex.shを同じディレクトリに配置しておくか、絶対パスに変更してください
-    sh ../ex.sh "$base"
+    # 比較対象ブランチがあるか確認
+    branch_count=$(git branch -r --format='%(refname:short)' | grep -vE "/$base$" | wc -l)
+    if [ "$branch_count" -eq 0 ]; then
+      echo "（比較対象となるリモートブランチがありません）"
+    else
+      sh ../ex.sh "$base"
+    fi
     echo
   done
 
